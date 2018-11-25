@@ -1,0 +1,48 @@
+\xchapter{Introduction}{}
+
+Programmers often have to choose between tabs and spaces, between \texttt{while} loops and \texttt{for} loops, between positioning the open bracket in the next line or in the current line, etc. These are choices that can be regarded as their coding styles. Are these choices distinguishable features? In this chapter we will discuss what is style-based source code authorship identification, what challenges it poses, what has been done and what it is useful for. We will also introduce our contributions on the subject.
+
+\section{Biometry and Coding Style}
+
+\section{Motivation}
+
+Throughout this work, we mainly consider the task of an investigator interested in deciding whether two anonymous pieces of code were authored by the same programmer or not. The actual authors of these pieces of code may be unknown to the investigator. Also, these codes may aim to solve different problems, therefore the investigator intends to distinguish them solely based on stylistic features of such pieces.
+
+We also consider easier scenarios where the set of possible authors are known to the investigator and labeled samples from this set are available. % TODO: link to section where these are formulated
+
+We approach these problems from a deep learning perspective, training a deep neural model that can be subsequently used to resolve authorship of source codes and applying it to the different scenarios an investigator can face.
+
+\section{Applications}
+
+Resolving source code authorship has a few real-world applications both in industry and academy. Although we haven't directly studied those, in this section we briefly describe them a few of them. In section (...) we also describe how the experimental formulations we propose in section (...) are related to each of them.
+
+\subsection{Plagiarism Detection}
+
+% alguma referencia q reforce esse paragrafo?
+Plagiarism can be generally defined as the unauthorized re-use of the work of another individual. Source code plagiarism is a widespread problem in academic institutions. Checking for plagiarism manually is time-consuming and not extremely effective, becoming impractical as the size of the codebase increases.
+
+Although automatic source code plagiarism detection is a recurring and well-studied problem \cite{plag_survey}, the approaches consolidated by widely used tools such as MOSS \cite{moss}, Sherlock and JPlag \cite{jplag} are mainly based on code similarity metrics which are greatly correlated to the task the code was written to solve.% refer to these tools
+
+For example, let's consider the specific case of \textit{ghostwriting}, where the code the individual claims to be of his authorship was neither written by him nor copied from a colleague, but was actually written by another person (a former student, for example).  It may not be possible to compare the suspicious code with another code by the same author, since the ghostwriter may actually be unknown. On the other hand, if pieces of code of the accused party are available, it's possible to determine if his coding style matches the coding style present in the suspicious code.
+
+Also, an analyst may strongly suspect that a piece of code a programmer claims to be of his authorship is actually not, but have no clue of who the actual author might be. This can be modeled as a binary classification problem where positive samples are other pieces of code of the same author and negative samples are pieces from unrelated programmers. We propose another approach to this problem in (...).
+
+\subsection{Copyright Infringement}
+
+Software forensics is the science of examining source code and binary code in order to identify, preserve, analyze and present facts and opinions about pieces of software. Although it can also be used in civil proceedings, it's most often associated with the investigation of a wide variety of computer crimes, one of which is copyright infringement.
+
+Code correlation analysis plays an important role at copyright disputes. In this case, an analyst has labeled codes from the involved parties and the task of determining if there was infringement or not.
+
+\subsection{Cyber Attack Identification}
+
+Cyber attack identification is a powerful application of software forensics in cyber security. Files left behind by an intruder during a cyber attack may have just enough information for an analyst to identify who the intruder is or to relate such an attack to a previous incident. Therefore, comparing the coding style of the attacker to those of authors of previous attacks and authors of public code repositories is of great interest to the analyst.
+
+\subsection{Exposing Anonymous Programmers}
+
+Although there are many helpful applications of source code authorship identification, systems capable of de-anonymizing programmers pose a threat to those who want to remain anonymous, in special for anonymous open source contributors. In particular, \cite{gitblame} shows how effectively modern methods can identify authorship of small pieces of code from GitHub repositories .There may be good reasons for a programmer to be anonymous, like working in a software a hostile government doesn't like. 
+
+An example of a famous open source anonymous programmer is Bitcoin's creator, Satoshi Nakamoto. For example, if we had a set of labeled codes from programmers that are likely to be Nakamoto, we could try to match their coding style to the early versions of Bitcoin, of course assuming that Nakamoto didn't try to obfuscate his own coding style.
+
+\section{Challenges}
+
+\section{Contribution}

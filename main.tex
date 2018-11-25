@@ -1,0 +1,273 @@
+%% Template para dissertacao/tese na classe UFBAthesis
+%% versao 1.0
+%% (c) 2005 Paulo G. S. Fonseca
+%% (c) 2012 Antonio Terceiro
+%% (c) 2014 Christina von Flach
+%% www.dcc.ufba.br/~flach/ufbathesis
+
+%% Carrega a classe ufbathesis
+%% Opcoes: * Idiomas
+%%           pt   - portugues (padrao)
+%%           en   - ingles
+%%         * Tipo do Texto
+%%           bsc  - para monografias de graduacao
+%%           msc  - para dissertacoes de mestrado (padrao)
+%%           qual - exame de qualificacao de mestrado
+%%           prop - exame de qualificacao de doutorado
+%%           phd  - para teses de doutorado
+%%         * Media
+%%           scr  - para versao eletronica (PDF) / consulte o guia do usuario
+%%         * Estilo
+%%           classic - estilo original a la TAOCP (deprecated) - apesar de deprecated, manter esse.
+%%           std     - novo estilo a la CUP (padrao)
+%%         * Paginacao
+%%           oneside - para impressao em face unica
+%%           twoside - para impressao em frente e verso (padrao)
+
+% AtenÃ§Ã£o: Manter 'classic' na declaracao abaixo:
+\documentclass[bsc, en, classic, a4paper]{ufbathesis}
+
+%% Preambulo:
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{lipsum}
+\usepackage{hyphenat}
+%\usepackage[usenames, dvipsnames, table]{xcolor} %TODO: try to uncomment
+\usepackage{booktabs}
+\usepackage{pifont}
+\usepackage{multirow}
+\usepackage{listings} 
+\usepackage{colortbl}
+\usepackage{xfrac}
+%\usepackage[FIGTOPCAP]{subfigure}
+\usepackage[printonlyused, withpage]{acronym}
+
+% Custom preamble
+\usepackage{cancel}
+\usepackage[utf8]{inputenc}
+\usepackage{nicefrac}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+%\usepackage{amsthm}
+%\usepackage{lineno,hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{subcaption}
+\usepackage{commath}
+
+\newcommand{\etal}{\textit{et~al }}
+\newcommand{\refalg}[1]{Algorithm~\ref{alg:#1}}
+\newcommand{\reffig}[1]{Figure~\ref{fig:#1}}
+\newcommand{\reftab}[1]{Table~\ref{tab:#1}}
+\newcommand{\refchap}[1]{chapter~\ref{chap:#1}}
+\newcommand{\Refchap}[1]{Chapter~\ref{chap:#1}}
+\newcommand{\refsec}[1]{section~\ref{sec:#1}}
+\newcommand{\Refsec}[1]{Section~\ref{sec:#1}}
+\newcommand{\refsubsec}[1]{subsection~\ref{subsec:#1}}
+\newcommand{\Refsubsec}[1]{Subsection~\ref{subsec:#1}}
+\newcommand{\procedure}[1]{{\scshape #1}}
+\newcommand{\href}[2]{#1} % href completely breaks citations
+\newcommand{\vc}[1]{\mathbf{#1}}
+
+% Universidade
+\university{Universidade Federal da Bahia}
+
+% Endereco (cidade)
+\address{Salvador}
+
+% Instituto ou Centro Academico
+\institute{Instituto de Matem\'{a}tica}
+
+% Nome da biblioteca - usado na ficha catalografica
+\library{Biblioteca Reitor Mac\^{e}do Costa} %TODO: is this correct?
+
+% Programa de pos-graduacao %TODO: is this correct?
+\program{Programa de Graduação em Ciência da Computação}
+
+% Area de titulacao
+\majorfield{Ci\^{e}ncia da Computa\c{c}\~{a}o}
+
+% Titulo da dissertacao
+\title{An efficient algorithm for isometrically embedding weighted trees into low-dimensional $\ell_\infty$-normed spaces}
+
+% Data da defesa
+% e.g. \date{19 de fevereiro de 2013}
+%TODO: set date
+\date{?? de dezembro de 2018}
+% e.g. \defenseyear{2013}
+\defenseyear{2018}
+
+% Autor
+% e.g. \author{Jose da Silva}
+\author{Jonathan Coutinho Luz de Queiroz}
+
+% Orientador(a)
+% Opcao: [f] - para orientador do sexo feminino
+% e.g. \adviser[f]{Profa. Dra. Maria Santos}
+\adviser{Tiago de Oliveira Januario}
+
+% Orientador(a)
+% Opcao: [f] - para orientador do sexo feminino
+% e.g. \coadviser{Prof. Dr. Pedro Pedreira}
+% Comente se nao ha co-orientador
+%\coadviser{Nome Completo do CO-ORIENTADOR}
+
+%% Inicio do documento
+\begin{document}
+
+%TODO: change to \frontpage?
+\pgcompfrontpage
+
+%% Parte pre-textual
+\frontmatter
+
+\presentationpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ficha catalografica
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\authorcitationname{Queiroz, Jonathan} % e.g. Terceiro, Antonio Soares de Azevedo
+\advisercitationname{Januario, Tiago} % e.g. Chavez, Christina von Flach Garcia
+%\coadvisercitationname{Sobrenome, Nome do CO-ORIENTADOR} % e.g. Mendonca, Manoel Gomes de
+\catalogtype{Monografia (Graduação)} % e.g. ``Tese (Doutorado)''
+
+\catalogtopics{1. Exact algorithm. 2. Isometric embedding. 3. Maximum norm} % Listar palavras-chave do trabalho para a FICHA CATALOGRAFICA}, por exemplo, ``1. Complexidade Estrutural. 2. Qualidade de Software 3. Engenharia de Software''
+\catalogcdd{XXX.XX} % e.g.  XXX.XX (nÃºmero nesse formato serah dado pela biblioteca)
+\catalogcdu{XXX.XX.XXX} % e.g.  XXX.XX.XXX (idem) 
+\catalogingsheet
+
+%%%%%%%%%%%%%%%%%%%%%
+% Termo de aprovacaoo
+%%%%%%%%%%%%%%%%%%%%%
+
+%TODO: set date
+\approvalsheet{Salvador, ?? de dezembro de 2018}{
+   \comittemember{Prof. Dr. Tiago Januario}{Universidade Federal da Bahia}
+   \comittemember{Prof. Dr. Professor 2}{Universidade Federal da Bahia}
+   \comittemember{Profa. Dra. Professora 3}{Universidade Federal da Bahia}
+   % Para mestrado, apenas 3.
+   % \comittemember{Prof. Dr. Professor 4}{Universidade HJKL}
+   % \comittemember{Profa. Dra. Professora 5}{Universidade QWERTY}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dedicatoria, Agradecimentos, Epigrafe
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%TODO: write dedicatory
+% Comente para ocultar
+\begin{dedicatory}
+DIGITE A DEDICATORIA AQUI
+\end{dedicatory}
+
+% Agradecimentos
+% Se preferir, crie um arquivo `a parte e o inclua via \include{}
+\acknowledgements
+%TODO: write acknowledgements
+DIGITE OS AGRADECIMENTOS AQUI
+
+% Epigrafe
+%TODO: write epigraph
+\begin{epigraph}[NOTA]{AUTOR}
+DIGITE AQUI A CITACAO
+\end{epigraph}
+
+%%%%%%%%%%%%%%%%%%%%%
+% Resumo em Portugues
+%%%%%%%%%%%%%%%%%%%%%
+
+%TODO: write abstract in Portuguese
+\resumo
+COLOQUE O RESUMO. Se preferir, crie um arquivo separado e o inclua via comando include.
+
+Para evitar problemas de formato neste template (de uso geral), usamos acentua\c{c}\~{a}o mostrada abaixo. 
+
+\begin{verbatim} 
+\c{c} \~{a} \'{a} \^{e} \'{\i}
+\end{verbatim} 
+
+N\~{a}o precisa fazer dessa forma, caso use pacotes adequados (latin1, etc.).
+
+%TODO: write keywords in Portuguese
+% Palavras-chave do resumo em Portugues
+\begin{keywords}
+PALAVRAS-CHAVE.
+\end{keywords}
+
+%%%%%%%%%%%%%%%%%%%
+% Resumo em Ingles
+%%%%%%%%%%%%%%%%%%%
+
+\abstract
+\input{src/abstract-en}
+% Palavras-chave do resumo em Ingles
+\begin{keywords}
+exact algorithm, isometric embedding, maximum norm
+\end{keywords}
+
+%%%%%%%%%%%%%%%%%%%
+% Sumario / Indice
+%%%%%%%%%%%%%%%%%%%
+
+% Comente para ocultar
+\tableofcontents
+
+% Lista de figuras
+% Comente para ocultar
+\listoffigures
+
+% Lista de tabelas
+% Comente para ocultar
+%\listoftables
+
+
+\iffalse
+\chapter*{Lista de Siglas}
+
+% Sintaxe da lista de acordo com a documentaÃ§Ã£o do pacote `acronym'
+% documentaÃ§Ã£o: http://mirror.unl.edu/ctan/macros/latex/contrib/acronym/acronym.pdf
+\begin{acronym}[PGCOMP]
+    \acro{PGCOMP}{Programa de Pós-Graduação em Ciência da Computação}
+    \acro{CNPq}{Conselho Nacional de Desenvolvimento Centífico e Tecnológico}
+\end{acronym}
+\fi
+
+%% Parte textual
+\mainmatter
+
+%\input{content-sample}
+\input{src/content}
+
+%% Parte pos-textual
+\backmatter
+
+% Bibliografia
+% Ã‰ aconselhÃ¡vel utilizar o BibTeX a partir de um arquivo, digamos "biblio.bib".
+% Para ajuda na criaÃ§Ã£o do arquivo .bib e utilizaÃ§Ã£o do BibTeX, recorra ao
+% BibTeXpress em www.cin.ufpe.br/~paguso/bibtexpress
+\bibliographystyle{abntex2-alf}
+\bibliography{src/biblio}
+
+% Apendices
+% Comente se naoo houver apendices
+\iffalse
+\appendix
+
+\xchapter{Exemplo de Apêndice}{} %sem preambulo
+\lipsum
+\fi
+% Eh aconselhavel criar cada apendice em um arquivo separado, digamos
+% "apendice1.tex", "apendice.tex", ... "apendiceM.tex" e depois
+% inclui--los com:
+% \include{apendice1}
+% \include{apendice2}
+% ...
+% \include{apendiceM}
+
+%% Fim do documento
+\end{document}
+%------------------------------------------------------------------------------------------%
