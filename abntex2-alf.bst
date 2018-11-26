@@ -314,7 +314,7 @@ FUNCTION {no.space} { { "" } swap$ }
 FUNCTION {space.word} { " " swap$ * " " * }
 
 FUNCTION {bbl.and}
-{ abnt.and.type #0 = {" e "} 'skip$ if$
+{ abnt.and.type #0 = {" and "} 'skip$ if$
   abnt.and.type #1 = {" \& "} 'skip$ if$}
 FUNCTION {bbl.chapter} { "cap." }
 FUNCTION {bbl.colon} {": "}
@@ -361,9 +361,9 @@ FUNCTION {bbl.semicolon} { "; "}
 FUNCTION {bbl.same.field} {"\underline{\ \ \ \ \ \ \ \ }"}
 FUNCTION {bbl.techrep} { "Rel. Tec." }
 FUNCTION {bbl.url.accessdate}
-  {iso.abbreviation { "Cited "} {"Acesso em: "} if$}
+  {iso.abbreviation { "Cited "} {"Cited "} if$}
 FUNCTION {bbl.url.available}
-{ iso.abbreviation {"Available from Internet: "} {"Dispon{\'\i}vel em: "} if$}
+{ iso.abbreviation {"Available from Internet: "} {"Available from Internet: "} if$}
 FUNCTION {bbl.void} {""}
 FUNCTION {bbl.volume} { iso.abbreviation {"vol."} {"v."} if$ }
 

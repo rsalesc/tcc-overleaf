@@ -110,7 +110,7 @@
             urlcolor=black,
             citecolor=black}
 \fi
-\RequirePackage[alf]{abntex2cite}
+\RequirePackage[alf,abnt-etal-cite=1]{abntex2cite}
 \RequirePackage{lastpage}
 \RequirePackage[top=3cm, bottom=2cm, left=3cm, right=2cm]{geometry}
 \RequirePackage{fix-cm}
