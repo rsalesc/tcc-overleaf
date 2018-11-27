@@ -23,20 +23,24 @@ We wrote a Python script that receives target constraints for the dataset and sc
 % TODO: more details on filters
 % TODO: add link to dataset
 
-\section{End-to-End Deep Learning Framework}\label{sec:framework}
-\subsection{Coding Style Descriptor}
+\section{Source Code Embedding Model}\label{sec:framework}
+
+In this section, we propose a deep learning model that embeds source codes, from their string representations, into a denser space. In section \ref{sec:descriptor}, we describe what is a style descriptor. In section \ref{sec:models}, we describe network architectures used in our work. In section \ref{sec:optimization}, we describe how the network was trained to generate meaningful style descriptors.
+
+\subsection{Coding Style Descriptor}\label{sec:descriptor}
 
 The performance of machine learning methods is heavily affected by the choice of data representation. Thus, much of the effort of the machine learning community has been put into developing algorithms that transform otherwise unmanageable data into representations that can be effectively used by learning methods \cite{representation_learning}.
 
-A Coding Style Descriptor (hereon referred simply as \textit{style descriptor}) is a $\mathbb{R}^n$ latent representation of a source code that captures its stylistic features. Ideally, style descriptors should encode everything a machine learning model needs to solve the problems posed in section \ref{sec:formulations}. Thus, we can build simpler classifiers for these problems if we are able to build good latent representations for source codes.
+A Coding Style Descriptor (hereon referred simply as \textit{style descriptor}) is an $n$-dimensional representation of a source code in a latent space. A latent space is a space where representations of similar objects lie close to each other. Therefore, the latent space of style descriptors captures stylistic similarities of source codes. Ideally, style descriptors should encode everything a machine learning model needs to solve the problems posed in section \ref{sec:formulations}. Thus, we can build simpler classifiers for these problems if we are able to build good latent representations for source codes.
+
+% TODO: add image explaining this concept
+% TODO: add references to embedding being succesfully applied in conjunction with deep learning
 
 Deep feed-forward networks are a natural approach to representation learning. In the remainder of this chapter, we will mainly study deep learning techniques to generate style descriptors from source codes.
 
-\subsection{Preprocessing}
-
-\subsection{Models}
+\subsection{Models}\label{sec:models}
 \subsubsection{Char-Level CNNs}
 \paragraph*{Network Architecture}
 \subsubsection{Hierarchical LSTMs}
 \paragraph*{Network Architecture}
-\subsection{Optimization}
+\subsection{Optimization}\label{sec:optimization}
