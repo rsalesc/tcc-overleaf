@@ -25,13 +25,13 @@ Resolving source code authorship has a few real-world applications both in indus
 \subsection{Plagiarism Detection}
 
 % TODO: alguma referencia q reforce esse paragrafo?
-Plagiarism can be generally defined as the unauthorized re-use of the work of another individual. Source code plagiarism is a widespread problem in academic institutions. Checking for plagiarism manually is time-consuming and not extremely effective, becoming impractical as the size of the codebase increases.
+Plagiarism can be generally defined as the unauthorized re-use of the work of another individual. Source code plagiarism is a widespread problem in academic institutions. Checking for plagiarism manually is time-consuming and not extremely effective, becoming impractical as the size of the code base increases.
 
-Although automatic source code plagiarism detection is a recurring and well-studied problem \cite{plag_survey}, the approaches consolidated by widely used tools such as MOSS \cite{moss}, Sherlock and JPlag \cite{jplag} are mainly based on code similarity metrics which are greatly correlated to the task the code was written to solve.% TODO: refer to sherlock
+Although automatic source code plagiarism detection is a recurring and well-studied problem \cite{plag_survey}, the approaches consolidated by widely used tools such as MOSS \cite{moss}, Sherlock (??, tem uma TODO) and JPlag \cite{jplag} are mainly based on code similarity metrics which are greatly correlated to the task the code was written to solve.% TODO: refer to sherlock
 
 For example, let's consider the specific case of \textit{ghostwriting}, where the code the individual claims to be of his authorship was neither written by him nor copied from a colleague, but was actually written by another person (a former student, for example).  It may not be possible to compare the suspicious code with another code by the same author, since the ghostwriter may actually be unknown. On the other hand, if pieces of code of the accused party are available, it's possible to determine if his coding style matches the coding style present in the suspicious code.
 
-Also, an analyst may strongly suspect that a piece of code a programmer claims to be of his authorship is actually not, but have no clue of who the actual author might be. This can be modeled as a binary classification problem where positive samples are other pieces of code of the same author and negative samples are pieces from unrelated programmers. We propose another approach to this problem in (...). % TODO: refer to formulation sections
+Also, an analyst may strongly suspect that a piece of code a programmer claims to be of his authorship is actually not, but have no clue of who the actual author might be. This can be modeled as a binary classification problem where positive samples are other pieces of code of the same author and negative samples are pieces from unrelated programmers. We propose another approach to this problem in section (...). % TODO: refer to formulation sections
 
 \subsection{Copyright Infringement}
 
@@ -52,7 +52,6 @@ Although there are many helpful applications of source code authorship identific
 An example of a famous open source anonymous programmer is Bitcoin's creator, Satoshi Nakamoto. For example, if we had a set of labeled codes from programmers that are likely to be Nakamoto, we could try to match their coding style to the early versions of Bitcoin, of course, assuming that Nakamoto didn't try to obfuscate his own coding style.
 
 \section{Challenges}
-%TODO: citar aqui ou em related work?
 
 Although comparison metrics have proved to work well for source codes, extracting features that encode the author's style and, therefore, are independent of the task being solved have proved to be challenging. For example, features such as methods and variables names can often be misleading. This task gets even more challenging as we need to select features that are steady across different programs and capable of distinguishing between programmers. In this work, we propose an end-to-end model that solves this problem.
 
@@ -62,11 +61,7 @@ In each of the mentioned applications, the claimed author may act adversarially 
 
 \section{Related Work}
 
-In this section, we describe how style-based source code authorship attribution has evolved throughout the years. We also briefly mention key works in the area of plain-text authorship attribution. While the two domains have different feature sets and different classification techniques have been applied to them, recent work in both areas are closely related. Moreover, we describe how deep learning growth might make works in these areas converge in the future.
-
-\subsection{Source Code Authorship Attribution}
-
-\citeonline{spafford} were among the first that suggested attributing source code based on style. Even though they suggested a handful of features, they did not propose an automated method nor a thorough analysis on how those features were useful. \citeonline{hypothesis} examined the conjecture that programmers are unique and that this uniqueness can be observed in the code they write. They conducted an experiment with programmers and graduate students, and found that programmers do have distinguishable style features which they use consistently.
+\citeonline{spafford} were among the first that suggested attributing source code based on style. Even though they suggested a lot of features, they did not propose an automated method nor a thorough analysis on how those features were useful. \citeonline{hypothesis} examined the conjecture that programmers are unique and that this uniqueness can be observed in the code they write. They conducted an experiment with programmers and graduate students, and found that programmers do have distinguishable style features which they use consistently.
 
 Ranking approaches to source code authorship attribution were proposed by \citeonline{burrows_ngrams,burrows_repo,burrows_ir} and \citeonline{fran_byte}. \citeauthoronline{burrows_ngrams} used an information retrieval technique to solve the task, obtaining token-level n-gram representations of the source codes, building an index from these representations and querying that index for programs with unknown authors. The authors of the top-ranked programs were considered the authors of the queried program. \citeauthoronline{fran_byte} used byte-level n-gram features to tackle the problem. An author profile is composed of the most frequent n-grams in training data of that author. Then, the author of an unclaimed program is considered the one with the most common n-grams to this code. Both works achieved high accuracy on very small suspect sets but didn't scale well.
 
@@ -74,18 +69,10 @@ Use of ASTs (abstract syntax trees) for authorship attribution was first introdu
 
 \citeonline{macdonell} introduced neural networks to the subject by using feed-forward neural networks and multiple discriminant analysis to attribute source codes. \citeonline{bandara} studied how deep neural networks could be competitive to previous methods given enough training data.
 
-\subsection{Text Authorship Attribution}
-
-Plain text authorship attribution has been consistently studied over the last few decades \cite{survey_text_recognition}. Most previous studies used stylometric analysis techniques for attributing authorship of literary texts \cite{stylometric,text_recognition}. As Internet has grown, the availability of plain text data has increased. Importance of attributing short texts, like SMS, tweets, etc. has arisen from forensics applications. 
-
-\citeonline{dl_text_recognition} showed how deep learning methods can leverage from data availability, using such techniques to classify news authorship. \citeonline{cnn_text_recognition} showed how CNNs (convolutional neural networks) could be used to classify authorship of short texts, like reddit comments and tweets.
-
-\subsection{Deep Learning}
-
-%TODO: end to end deep learning
-
 \section{Contribution}
 
-In this work, we introduce the concept of \textit{coding style descriptors}, which are high dimensional representations that capture distinguishing stylistic features of a source code. We propose an end-to-end deep model that produces coding style descriptors from source code. Then, we study how the generated descriptors encode meaningful properties to the source code attribution problem by solving many of its variations.
+In this work, we introduce the concept of \textit{coding style descriptors}, which are compact representations that capture distinguishing stylistic features of a source code. We propose an end-to-end deep model that produces coding style descriptors from source code. Then, we study how the generated descriptors encode meaningful properties to the source code attribution problem by solving many of its variations.
 
 We also introduce the Codeforces dataset for source code attribution, a C++ dataset with more than 30,000 samples extracted from Codeforces, a website specialized in holding online programming competitions. We briefly describe how the dataset was constructed and how it differs from previously published datasets.
+
+% TODO: devo falar algo de eval aqui?

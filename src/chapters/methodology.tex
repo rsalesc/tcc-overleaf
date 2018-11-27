@@ -25,7 +25,14 @@ We wrote a Python script that receives target constraints for the dataset and sc
 
 \section{Source Code Embedding Model}\label{sec:framework}
 
-In this section, we propose a deep learning model that embeds source codes, from their string representations, into a denser space. In section \ref{sec:descriptor}, we describe what is a style descriptor. In section \ref{sec:models}, we describe network architectures used in our work. In section \ref{sec:optimization}, we describe how the network was trained to generate meaningful style descriptors.
+In this section, we propose a deep learning model that embeds source codes, from their string representations, into a denser latent space. In section \ref{sec:descriptor}, we describe what is a style descriptor. In section \ref{sec:models}, we describe network architectures used in our work. In section \ref{sec:optimization}, we describe how the network was trained to generate meaningful style descriptors.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\linewidth]{imgs/lstm.pdf}
+	\caption{Overview of style descriptor generation pipeline.}
+	\label{fig:overall}
+\end{figure}
 
 \subsection{Coding Style Descriptor}\label{sec:descriptor}
 
