@@ -1,15 +1,20 @@
 \xchapter{Methodology}{}
 
-In this chapter, we present formulations to the many variants of the source code attribution problem in Section \ref{sec:formulations}, we describe how the Codeforces dataset was assembled in Section \ref{sec:dataset} and present a top-down approach to how the end-to-end model was developed in section \ref{sec:framework}.
+In this chapter, we present a formulation for the source code attribution problem (Section \ref{sec:formulation}), we describe how the Codeforces dataset was assembled (Section \ref{sec:dataset}) and present a top-down approach to how the end-to-end model was developed in (Section \ref{sec:framework}).
 
-\section{Problem Formulation}\label{sec:formulations}
+\section{Problem Formulation}\label{sec:formulation}
+
+Although there are many variations of the source code attribution problem, in this chapter we will focus on one of them. In Chapter \ref{chap:evaluation}, we analyze other variations of the problem.
+
+Given two source codes $A, B$, we want to determine if $A$ and $B$ were written by the same programmer. For that end, we have a dataset of source codes labeled with their authors, which can be used to train a classifier. However, the authors of $A$ and $B$ are not necessarily represented in this set.
+
 \section{Datasets}\label{sec:dataset}
 
 The first step to develop an effective deep learning model is to gather enough training data. In this work, we decided to work with C++ source codes written in a laboratory environment -- we assume the whole code is written by the author under no external style enforcement such as a style guide.
 
 \subsection{Google Code Jam}
 
-Although there are many public C++ laboratory datasets, the Google Code Jam\footnote{\url{https://codingcompetitions.withgoogle.com/codejam}} dataset \cite{caliskan_2015} is probably the biggest of them all. Samples from this dataset are collected from previous editions of Google Code Jam, an annual programming competition held by Google. In this competition, participants are given algorithmic tasks to be solved in a limited amount of time. As such, it's very likely that code written by a participant manifests his own coding style.
+Although there are many public C++ laboratory datasets, the Google Code Jam\footnote{\url{https://codingcompetitions.withgoogle.com/codejam}} dataset \cite{caliskan_2015} is probably the biggest of them all. Samples from this dataset are collected from previous editions of Google Code Jam, an annual programming competition held by Google. In this competition, participants are given algorithmic tasks to be solved in a limited amount of time. Thus, it's very likely that code written by a participant manifests his own coding style.
 
 Google Code Jam holds nearly 10 rounds every year. Most of these rounds are eliminatory. Thus, the availability of samples from less experienced participants is expected to be low. If we want to build a balanced training set not biased by the way experienced participants code, we are limited by the small amount of code less experienced participants wrote.
 
@@ -19,13 +24,12 @@ Although this dataset was not extensively used throughout the development phase,
 
 Codeforces\footnote{\url{http://codeforces.com}} is a website specialized in holding online programming contests. Contest format is similar to Google Code Jam's, but they are not eliminatory. Thus, we are able to find a lot of samples from both non-experienced and experienced users.
 
-We wrote a Python script that receives target constraints for the dataset and scrapes Codeforces for samples. Using this script, we assembled a balanced dataset with more than 30,000 samples from nearly 2,000 authors, meaning that we have around 15 samples per author. This dataset was packaged and made public\footnote{link-pro-dataset}.
-% TODO: more details on filters
+We wrote a Python script that receives target constraints for the dataset and scrapes Codeforces for samples. Using this script, we assembled a balanced dataset with more than 30,000 C++ samples from nearly 2,000 authors, meaning that we have around 15 samples per author. This dataset was packaged and made public\footnote{link-pro-dataset}.
 % TODO: add link to dataset
 
 \section{Source Code Embedding Model}\label{sec:framework}
 
-In this section, we propose a deep learning model that embeds source codes, from their string representations, into a denser latent space. In Section \ref{sec:descriptor}, we describe what is a style descriptor. In Section \ref{sec:models}, we describe network architectures used in our work. In Section \ref{sec:optimization}, we describe how our embedding network was trained to generate meaningful descriptors.
+In this section, we propose a deep learning model that embeds source codes, from their string representations, into a denser latent space (Fig. \ref{fig:overall}). In Section \ref{sec:descriptor}, we describe what is a style descriptor. In Sections \ref{sec:models:cnn} and \ref{sec:models:lstm}, we describe network architectures used in our work. In Section \ref{sec:optimization}, we describe how our embedding network was trained to generate meaningful descriptors.
 
 \begin{figure}[ht]
 	\centering
@@ -33,13 +37,12 @@ In this section, we propose a deep learning model that embeds source codes, from
 	\caption{Overview of style descriptor generation pipeline.}
 	\label{fig:overall}
 \end{figure}
-% TODO: se referir a essa figura em algum lugar
 
 \subsection{Coding Style Descriptor}\label{sec:descriptor}
 
 The performance of machine learning methods is heavily affected by the choice of data representation. Thus, much of the effort of the machine learning community has been put into developing algorithms that transform otherwise unmanageable data into representations that can be effectively used by learning methods \cite{representation_learning}.
 
-A Coding Style Descriptor (hereon referred simply as \textit{style descriptor}) is a $d$-dimensional representation of a source code in a latent space. A latent space is a space where representations of similar objects lie close to each other. Therefore, the latent space of style descriptors should capture stylistic similarities of source codes. Ideally, style descriptors should encode everything a machine learning model needs to solve the problems posed in Section \ref{sec:formulations}. Thus, we can build simpler classifiers for these problems if we can provide a good embedding function $f(x) \in \mathbb{R}^d$, which maps source codes to $d$-dimensional descriptors.
+A Coding Style Descriptor (hereon referred simply as \textit{style descriptor}) is a $d$-dimensional representation of a source code in a latent space. A latent space is a space where representations of similar objects lie close to each other. Therefore, the latent space of style descriptors should capture stylistic similarities of source codes. Ideally, style descriptors should encode everything a machine learning model needs to solve the problem posed in Section \ref{sec:formulation} and its variations. Thus, we can build simpler classifiers for these problems if we can provide a good embedding function $f(x) \in \mathbb{R}^d$, which maps source codes to $d$-dimensional descriptors.
 
 % TODO: add references to embedding being succesfully applied in conjunction with deep learning
 
@@ -47,15 +50,15 @@ Deep feed-forward networks are a natural approach to representation learning. In
 
 \subsection{Preprocessing}\label{sec:preprocessing}
 
-Using Tensorflow static graph, it is not possible to support arbitrary input sizes in a batch. Therefore, we must crop our source code to a maximum line length $M$ and a maximum number of lines $L$, converting it to a $L \times M$ char matrix. The positions that do not correspond to a char in the source code are masked out both during inference and during optimization. For the models we propose, we chose values of $M$ and $L$ that incurred the best improvement while keeping the training time affordable.0
+The models we propose are end-to-end. Thus, the code is minimally preprocessed. Using Tensorflow static graph, it is not possible to support arbitrary input sizes in a batch. Therefore, we must crop our source code to a maximum line length $M$ and a maximum number of lines $L$, converting it to a $L \times M$ char matrix. We chose to pick the last $L$ lines of the code and the first $M$ characters of each line. The positions that do not correspond to a char in the source code are masked out both during inference and during optimization. For the models we propose, we chose values of $M$ and $L$ that incurred the best improvement while keeping the training time and memory consumptions affordable.
 
-\subsection{Model based on Convolutional Networs}
+\subsection{Model based on Convolutional Networks}\label{sec:models:cnn}
 
 \subparagraph*{Network Architecture}
 
-\subsection{Model based on Long Short-Term Memory Networks}
+\subsection{Model based on Long Short-Term Memory Networks}\label{sec:models:lstm}
 
-Recurrent neural networks (RNNs) were introduced to solve the lack of persistence of feed-forward networks. They are networks with loops in them. They are fed from an external input -- a sequence -- and from their own output (Fig \ref{fig:rnn:generic}). Although generic RNNs are powerful and in theory are capable of learning any kind of sequence dependency, in practice they struggle to handle those that are long-term. The problems of training RNNs with gradient descent were studied by \citeonline{rnn_sgd}.
+Recurrent neural networks (RNNs) were introduced to solve the lack of persistence of feed-forward networks. They are networks with loops in them. They are fed from an external input -- a sequence $x$ -- and from their own output $h$ (Fig \ref{fig:rnn:generic}). Although generic RNNs are powerful and in theory are capable of learning any kind of sequence dependency, in practice they struggle to handle those that are long-term. The problems of training RNNs with gradient descent were studied by \citeonline{rnn_sgd}.
 
 \begin{figure}[ht]
 	\centering
@@ -71,9 +74,18 @@ Recurrent neural networks (RNNs) were introduced to solve the lack of persistenc
 	\label{fig:rnn}
 \end{figure}
 
+\subparagraph*{LSTM} 
+Long Short-Term Memory (LSTM) network was a special kind of RNN introduced by \citeonline{lstm}. LSTMs were specifically developed to avoid the long-term dependency problem. It accomplishes that with its special cell design (Fig. \ref{fig:rnn:lstm}). During sequence unrolling, it learns what to remember and what to forget through carefully regulated gates -- depicted as sigmoid layers. Moreover, besides being fed with its own output, it maintains an internal cell state which helps it to remember such dependencies. Although LSTMs usually produce sequences, it is a common procedure to take only the last produced element as its output.
+
+Given the efficiency of LSTMs, many researchers have focused on studying other variations of it \cite{lstm_odyssey}.
+
+\subparagraph*{Bidirectional LSTM} Long Short-Term Memory cells are very good at remembering. However, they can only infer based on previous elements of the input sequence. A bidirectional LSTM \cite{bi_lstm} is an extension of the usual LSTM that supports inferring based on both previous elements and subsequent elements of a sequence. It maintains two hidden layers: one for the left-to-right propagation and other for the right-to-left propagation. The results of these two passes are combined into a single result, usually through concatenation or averaging.
+
+\subparagraph*{LSTM Stacking} The sequence produced by a LSTM network can be re-used as input for another LSTM network. This is called LSTM stacking. As it is the case with other types of networks, deepening a LSTM network usually improves its performance \cite{deep_lstm}. Intuitively, it allows each layer to independently learn different levels of abstraction.
+
 \subparagraph*{Network Architecture}
 
-Our proposed architecture can be split in three parts: the char embedding layer, the line descriptor module (Fig. \ref{fig:lstm_architecture:a}) and the style descriptor module (Fig. \ref{fig:lstm_architecture:b}).
+Our proposed architecture is heavily based on bidirectional LSTM stacks and can be split in three parts: the char embedding layer, the line descriptor module (Fig. \ref{fig:lstm_architecture:a}) and the style descriptor module (Fig. \ref{fig:lstm_architecture:b}).
 
 \begin{figure}[htbp]
 	\centering
@@ -92,46 +104,26 @@ Our proposed architecture can be split in three parts: the char embedding layer,
 
 \subparagraph*{Char Embedding Layer}
 
-Neural networks can't handle discrete types -- like chars -- naturally. As such, we need to map the alphabet $\Sigma$ of source codes to real-valued vectors. We could simply convert each char to a $|\Sigma|$-dimensional one-hot vector. As opposed to arbitrarily defining a mapping, we can also let the network learn it. 
+Neural networks can't handle discrete types -- like chars -- naturally. Hence, we need to map the alphabet $\Sigma$ of characters of source codes to real-valued vectors. We could simply convert each char to a $|\Sigma|$-dimensional one-hot vector. As opposed to arbitrarily defining a mapping, we can also let the network learn it \cite{keras_embedding}. 
 
 The char embedding layer is responsible for learning an embedding $f_c(x) \in \mathbb{R}^{d_c}$ that maps chars to $d_c$-dimensional vectors. Thus, each char in the source code is converted to a real-valued vector. Hereon, we will simply refer to char embeddings as chars.
-% TODO: add referencia pro embedding do keras
 
 \subparagraph*{Line Descriptor Module} 
 
-This module is responsible for learning an embedding $f_l(x) \in \mathbb{R}^{d_l}$ that maps lines of code to $d_l$-dimensional descriptors. Each line of the source code is fed -- char by char -- to the same char-level bidirectional LSTM.
+This module is responsible for learning an embedding $f_l(x) \in \mathbb{R}^{d_l}$ that maps lines of code to $d_l$-dimensional descriptors. Each line of the source code is fed -- char by char -- to the same char-level bidirectional LSTM stack. The last element of the sequence produced by this LSTM is taken as the line descriptor.
 
 \subparagraph*{Style Descriptor Module}
 
-The line descriptors generated by the line descriptor module are stacked back into a descriptor matrix. This module is responsible for learning an embedding $f_s(x) \in \mathbb{R}^d$ that maps descriptor matrices to $d$-dimensional style descriptors. Thus, the whole descriptor matrix is fed -- line by line -- to a line-level bidirectional LSTM, passed through a fully-connected layer and normalized to lie on the $d$-sphere. The resulting descriptor is the desired style descriptor.
+The line descriptors generated by the line descriptor module are stacked back into a descriptor matrix. This module is responsible for learning an embedding $f_s(x) \in \mathbb{R}^d$ that maps descriptor matrices to $d$-dimensional style descriptors. Thus, the whole descriptor matrix is fed -- line by line -- to a line-level bidirectional LSTM stack. The last element produced by this LSTM is passed through a fully-connected layer and normalized to lie on the boundary of the $d$-sphere. The result is taken as the desired style descriptor.
 
-We believe this architecture encourages the network to learn in a divide-and-conquer manner, by learning the individual features of each line and how to combine them into a single descriptor. The hyperparameter values chosen through the validation phase are given in Table \ref{tab:lstm_hyper}.
-
-% TODO: regenerate this table
-\begin{table}[htbp]
-	\centering
-	\begin{tabular}{c|l}
-		\hline
-		\textbf{Parameter}           & \multicolumn{1}{c}{\textbf{Value}} \\ \hline
-		maximum line length   & (...)                            \\ \hline
-		maximum number of lines   & (...)                            \\ \hline
-		$d_c$, char embedding size   & (...)                            \\ \hline
-		$d_l$, line descriptor size  & (...)                            \\ \hline
-		$d$, style descriptor size & (...)                            \\ \hline
-		char-level LSTM hidden units & (...)                            \\ \hline
-		line-level LSTM hidden units & (...)                            \\ \hline
-		fully-connected layer units  & (...)                            \\ \hline
-	\end{tabular}
-	\caption{Values for the hyperparameters of the LSTM-based model.}
-	\label{tab:lstm_hyper}
-\end{table}
+We believe this architecture encourages the network to learn in a divide-and-conquer manner, by learning the individual features of each line and how to combine them into a single descriptor. Our selection of hyperparameter values for this architecture are given in Chapter \ref{chap:evaluation}.
 
 \subsection{Optimization}\label{sec:optimization}
-%TODO: optimization preamble
+Although we decided the architecture of our models, we still have to make them learn. For that end, we review two optimization methods widely used in multi-class identification problems.
 
 \subsubsection{Softmax Cross-Entropy Loss}\label{sec:softmax}
 
-The softmax function is commonly used in multi-class classification problems. In a $d$-class scenario, let $f(x) \in \mathbb{R}^d$ be the output of our neural network for a sample $x$. ...
+The softmax function is commonly used in multi-class classification problems. In a $d$-class scenario, let $f(x) \in \mathbb{R}^d$ be the output of our neural network for a sample $x$. The softmax activation for this sample is given as
 
 \begin{equation}
 q(i) = \frac{e^{f(x)_i}}{\sum_j e^{f(x)_j}} \,.
@@ -145,15 +137,16 @@ $q(i)$ assume values ranging from 0 to 1, and $\sum_i a_i = 1$. Therefore, we ca
 
 where $p(x, i)$ is the actual probability the sample $x$ is from class $i$ (usually a one-hot vector). Thus, by minimizing $\mathcal{L}$, we minimize the cross-entropy between the probability distribution $p$ and an estimated distribution $q$.
 
-Although softmax cross-entropy loss is a very powerful tool, it does not naturally account for the fact that the number of classes may be unknown. Although there are techniques to apply softmax in these scenarios \cite{softmax_trick1,softmax_trick2}, there are other optimization methods designed for such cases. Therefore, we restrict ourselves to use this method only when the number of classes is known.
+% TODO: talk about KL?
+Although softmax cross-entropy loss is a very powerful tool, it does not naturally account for the fact that the number of classes may be unknown. Although there are techniques to apply softmax in these scenarios \cite{softmax_trick1,softmax_trick2}, there are other optimization methods designed for such cases. Also, it is not inherently suited for generating descriptors. Hence, we restrict ourselves to use this method only when the number of classes is known.
 
 \subsubsection{Triplet Loss}\label{sec:triplet}
 
-\citeonline{facenet} introduced triplet loss for training embedding networks. In their work, the loss function is used in conjunction with a novel triplet mining algorithm to train an embedding network that maps images to descriptors. These descriptors are then used to solve face recognition. Triplet loss works in scenarios where the number of classes is unknown. As such, it is well-suited for deciding if two pieces of code are of the same person, even if they are unknown to the system.
+\citeonline{facenet} introduced triplet loss for training embedding networks. In their work, the loss function is used in conjunction with a novel triplet mining algorithm to train an embedding network that maps images to descriptors. These descriptors are then used to solve face recognition. Moreover, triplet loss works in scenarios where the number of classes is unknown. Therefore, it is well-suited for deciding if two pieces of code are of the same person, even if they are unknown to the system. In this section, we will study the $L_2$ triplet loss.
 
 The embedding is represented by $f(x) \in \mathbb{R}^d$. Additionally, we constrain this embedding to the boundary of a unit $d$-sphere, \textit{i.e.} $\norm{f(x)}_2 = 1$.
 
-Let $a, p, n$ (stand for anchor, positive and negative, respectively) be a triplet from the training set such that $a$ and $p$ have the same label (positive pair), but $a$ and $n$ have different labels (negative pair). Also, let $\mathcal{T}$ be the set of all possible said triplets. Then, triplet loss is defined as
+Let $a, p, n$ (stand for anchor, positive and negative, respectively) be a triplet from the training set such that $a$ and $p$ have the same label (positive pair), but $a$ and $n$ have different labels (negative pair). Also, let $\mathcal{T}$ be the set of all possible said triplets. Then, the $L_2$ triplet loss is defined as
 
 \begin{equation}\label{eq:triplet}
 \mathcal{L} = \sum_{(a, p, n) \in \mathcal{T}} %
@@ -196,7 +189,7 @@ Generating all triplets from $\mathcal{T}$ would consider many triplets that eas
 
 \citeauthoronline{facenet} suggested the online semi-hard triplet mining method to tackle both problems. Instead of picking hard triplets from the whole training set, we pick them from the mini-batch. Also, their work suggests that prioritizing triplets such that negatives lie in the margin area (Fig. \ref{fig:triplet:b}) helps avoiding local minima early in the training. Such triplets are called \textit{semi-hard}.
 
-Although in Chapter (...) we use softmax cross-entropy loss for comparison purposes, we mostly worked with triplet loss.  Therefore, our main optimization flow is pictured in Fig. \ref{fig:triplet_overall}.
+Although in Chapter \ref{chap:evaluation} we use softmax cross-entropy loss for comparison purposes, we mostly worked with triplet loss.  Therefore, our main optimization flow is pictured in Fig. \ref{fig:triplet_overall}.
 
 \begin{figure}[hbpt]
 	\centering
