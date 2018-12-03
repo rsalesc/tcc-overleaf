@@ -1,20 +1,38 @@
 \xchapter{Evaluation}{}\label{chap:evaluation}
 
+In this chapter, we evaluate our model by solving two variations of the source code attribution problem. In Section (...), we describe how we selected the parameters of our model. In Section (...), we solve the authorship matching problem suggested in Chapter \ref{chap:methodology}. In Section (...), we solve a closed-world identification problem.
+
+\section{Training and Selection}\label{sec:validation}
+
+We trained and validated the LSTM-based model with Tensorflow. We picked the training samples from a balanced dataset with 20,000 C++ examples from 1,000 authors. A validation set was built from another 3,200 samples from 400 authors. No author from the training set was present on the validation set. All the samples were extracted from the Codeforces dataset.
+
+Although programming competitions resemble laboratory conditions, it is common for participants to code on top of a pre-written file, usually called \textit{template}. Although the constructions present on a template file are usually written by the author himself, they are not always used by the piece of code actually written during the competition. Therefore, it is interesting to analyze how classifiers perform when such constructions are stripped out of the code. For that end, we used \textit{clang}\footnote{link-do-clang} to remove unused pieces of code from a C++ program. Moreover, we also removed macros, a construction heavily present in templates of competitive programmers. Therefore, we built two versions of each dataset: one composed of raw source codes and other composed of codes processed by \textit{clang}.
+
+We optimized our model with \textit{RMSprop} (...) for a maximum of 50 epochs, or until the evaluated equal error rate (EER) of the model on the validation set had no improvement for 5 epochs. The model that yielded the highest EER was taken as the final model. During this process, we carefully tuned hyperparameters, arriving at the final configuration shown in Table \ref{tab:lstm_hyper}.
+
+Finally, we trained two different models using these parameters: one on the raw version of the dataset and other on the \textit{clang} processed version.
+
 % TODO: regenerate this table
 \begin{table}[htbp]
 	\centering
-	\begin{tabular}{c|l}
+	\begin{tabular}{c|r}
 		\hline
-		\textbf{Parameter}           & \multicolumn{1}{c}{\textbf{Value}} \\ \hline
-		maximum line length   & (...)                            \\ \hline
-		maximum number of lines   & (...)                            \\ \hline
-		$d_c$, char embedding size   & (...)                            \\ \hline
-		$d_l$, line descriptor size  & (...)                            \\ \hline
-		$d$, style descriptor size & (...)                            \\ \hline
-		char-level LSTM hidden units & (...)                            \\ \hline
-		line-level LSTM hidden units & (...)                            \\ \hline
-		fully-connected layer units  & (...)                            \\ \hline
+		\textbf{Parameters}           & \multicolumn{1}{c}{\textbf{Value}} \\ \hline
+		learning rate   & 0.001                        \\ \hline
+		triplet loss margin   & 0.2                        \\ \hline
+		maximum line length   & 80                        \\ \hline
+		maximum number of lines   & 120                            \\ \hline
+		$d_c$, char embedding size   & 72                           \\ \hline
+		$d_l$, line descriptor size  & 64                            \\ \hline
+		$d$, style descriptor size & 128                            \\ \hline
+		char-level LSTM hidden units (stacked) & 128/64                            \\ \hline
+		line-level LSTM hidden units & 128                            \\ \hline
+		fully-connected layer units  & 256                            \\ \hline
 	\end{tabular}
-	\caption{Values for the hyperparameters of the LSTM-based model.}
+	\caption{Hyperparameters selected for the LSTM-base model during validation.}
 	\label{tab:lstm_hyper}
 \end{table}
+
+\section{Matching Two Unknown Source Codes}
+
+Using the models we trained, we tried to solve the problem of deciding if two source codes are from the same author. For that end, we constructed a test dataset with 3,200 samples from 400 authors. These samples were extracted from the Codeforces dataset, but this set has no intersection of authors with the training and validation sets used to train the models. Therefore, the authors are unknown to the system. Moreover, we ran \textit{clang} on the samples, obtaining a \textit{clang} processed version of the test dataset.
