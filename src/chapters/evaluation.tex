@@ -10,7 +10,7 @@ Although programming competitions resemble laboratory conditions, it is common f
 
 We optimized our model with \textit{RMSprop} (...) for a maximum of 50 epochs, or until the evaluated equal error rate (EER) of the model on the validation set had no improvement for 5 epochs. The model that yielded the highest EER was taken as the final model. During this process, we carefully tuned hyperparameters, arriving at the final configuration shown in Table \ref{tab:lstm_hyper}.
 
-Finally, we trained two different models using these parameters: one on the raw version of the dataset and other on the \textit{clang} processed version.
+Finally, we trained two different classifiers using these parameters: one on the raw version of the dataset and other on the \textit{clang} processed version.
 
 % TODO: regenerate this table
 \begin{table}[htbp]
@@ -35,4 +35,59 @@ Finally, we trained two different models using these parameters: one on the raw 
 
 \section{Matching Two Unknown Source Codes}
 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{imgs/roc_complete.png}
+	\caption{ROC curve for each pair of classifier and dataset version.}
+	\label{fig:roc_complete}
+\end{figure}
+
 Using the models we trained, we tried to solve the problem of deciding if two source codes are from the same author. For that end, we constructed a test dataset with 3,200 samples from 400 authors. These samples were extracted from the Codeforces dataset, but this set has no intersection of authors with the training and validation sets used to train the models. Therefore, the authors are unknown to the system. Moreover, we ran \textit{clang} on the samples, obtaining a \textit{clang} processed version of the test dataset.
+
+Finally, we ran four evaluations, one for each combination of classifier and test dataset. The results can be seen in Fig. \ref{fig:roc_complete} and  Table \ref{tab:matching}.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{ccr}
+		\cline{2-3}
+		\multicolumn{1}{l}{}                     & \multicolumn{2}{c}{\textbf{EER (\%)}}                                   \\ \cline{2-3} 
+		\textbf{}                                & \textbf{Raw Test Set}     & \multicolumn{1}{l}{\textbf{\textit{clang} Test Set}} \\ \hline
+		\textbf{LSTM (trained on raw version)}   & \multicolumn{1}{r}{13.88} & 12.24                                       \\ \hline
+		\textbf{LSTM (trained on \textit{clang} version)} & \multicolumn{1}{r}{13.25} & 11.60                                        \\ \hline
+	\end{tabular}
+	\caption{Equal error rate (EER) evaluation of the trained models on each test set.}
+	\label{tab:matching}
+\end{table}
+
+We can notice that the performance on raw source codes is slightly worse than the others. This can be related to the fact that tested authors are not present in training and validation sets. The model is probably relying more on features present on templates, instead of on stylistic features of the written code. Therefore, the embeddings generalize poorly to unknown authors. The better performance of the \textit{clang} combination supports this claim by showing that learning from features of the written code yields better generalization.
+
+\section{Closed-World Author Identification}
+
+The rank-$n$ metric evaluations, for $n = 1, n = 3$, can be seen in Table \ref{tab:rank1} and Table \ref{tab:rank3}, respectively.
+
+\begin{table}[bh]
+	\centering
+	\begin{tabular}{ccr}
+		\cline{2-3}
+		\multicolumn{1}{l}{}                     & \multicolumn{2}{c}{\textbf{rank-1 (\%)}}                                          \\ \cline{2-3} 
+		\textbf{}                                & \textbf{Raw Test Set}               & \multicolumn{1}{l}{\textbf{Clang Test Set}} \\ \hline
+		\textbf{LSTM (trained on raw version)}   & \multicolumn{1}{r}{74.8\%} & 67\%                      \\ \hline
+		\textbf{LSTM (trained on clang version)} & \multicolumn{1}{r}{65\%}   & 69\%                             \\ \hline
+		\textbf{\citeauthoronline{caliskan_2015}} & \multicolumn{1}{r}{(...)\%}   & n/a                            \\ \hline
+	\end{tabular}
+	\caption{My caption}
+	\label{tab:rank1}
+\end{table}
+
+\begin{table}[bh]
+	\centering
+	\begin{tabular}{ccr}
+		\cline{2-3}
+		\multicolumn{1}{l}{}                     & \multicolumn{2}{c}{\textbf{rank-3 (\%)}}                                          \\ \cline{2-3} 
+		\textbf{}                                & \textbf{Raw Test Set}               & \multicolumn{1}{l}{\textbf{Clang Test Set}} \\ \hline
+		\textbf{LSTM (trained on raw version)}   & \multicolumn{1}{r}{84.4\%} & 79.6\%                               \\ \hline
+		\textbf{LSTM (trained on clang version)} & \multicolumn{1}{r}{78.8\%}   & 82.8\%                               \\ \hline
+	\end{tabular}
+	\caption{My caption}
+	\label{tab:rank3}
+\end{table}
