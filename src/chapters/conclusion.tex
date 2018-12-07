@@ -1,1 +1,7 @@
 \xchapter{Conclusion}{}
+
+This work offers a study on the application of deep learning methods to the source code authorship attribution problem. In particular, we have proposed a LSTM-based model that generates descriptors which preserve stylistic similarities between source codes. Moreover, we have shown experiments supporting that stylistic features are discriminative. 
+
+We evaluated our model in the problem of deciding if two codes were written by the same person and achieved 11.6 \% of EER. In the one-to-many identification problem, we achieved 74.8\% accuracy, 20\% less than state-of-the-art. Although we were not able to improve this result, we believe state-of-the-art deep learning methods can be successfully applied to the source code attribution problem, and that further improvements in the area will be related to that.
+
+In the future, we hope to modify our models to support variable-length code. We also want to generate meaningful style descriptors from abstract syntax trees to improve the accuracy of our methods. Moreover, we want to be able to classify small pieces of code, like those of Git repositories.
