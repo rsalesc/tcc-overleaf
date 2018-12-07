@@ -95,8 +95,7 @@
 
 % Data da defesa
 % e.g. \date{19 de fevereiro de 2013}
-%TODO: set date
-\date{?? de dezembro de 2018}
+\date{14 de dezembro de 2018}
 % e.g. \defenseyear{2013}
 \defenseyear{2018}
 
@@ -145,7 +144,7 @@
 %%%%%%%%%%%%%%%%%%%%%
 
 %TODO: set date e banca
-\approvalsheet{Salvador, ?? de dezembro de 2018}{
+\approvalsheet{Salvador, 14 de dezembro de 2018}{
    \comittemember{Prof. Dr. Maurício Pamplona Segundo}{Universidade Federal da Bahia}
    \comittemember{Prof. Dr. Professor 2}{Universidade Federal da Bahia}
    \comittemember{Profa. Dra. Professora 3}{Universidade Federal da Bahia}
@@ -164,32 +163,18 @@
 %TODO: write acknowledgements
 DIGITE OS AGRADECIMENTOS AQUI
 
-% Epigrafe
-%TODO: write epigraph
-\begin{epigraph}[NOTA]{AUTOR}
-DIGITE AQUI A CITACAO
-\end{epigraph}
-
 %%%%%%%%%%%%%%%%%%%%%
 % Resumo em Portugues
 %%%%%%%%%%%%%%%%%%%%%
 
 %TODO: write abstract in Portuguese
 \resumo
-COLOQUE O RESUMO. Se preferir, crie um arquivo separado e o inclua via comando include.
-
-Para evitar problemas de formato neste template (de uso geral), usamos acentua\c{c}\~{a}o mostrada abaixo. 
-
-\begin{verbatim} 
-\c{c} \~{a} \'{a} \^{e} \'{\i}
-\end{verbatim} 
-
-N\~{a}o precisa fazer dessa forma, caso use pacotes adequados (latin1, etc.).
+\input{src/abstract-pt}
 
 %TODO: write keywords in Portuguese
 % Palavras-chave do resumo em Portugues
 \begin{keywords}
-PALAVRAS-CHAVE.
+perícia de software, identificação de autoria, aprendizagem profunda
 \end{keywords}
 
 %%%%%%%%%%%%%%%%%%%
@@ -200,7 +185,7 @@ PALAVRAS-CHAVE.
 \input{src/abstract-en}
 % Palavras-chave do resumo em Ingles
 \begin{keywords}
-perícia de software, identificação de autoria, aprendizagem profunda
+software forensics, authorship identification, deep learning
 \end{keywords}
 
 %%%%%%%%%%%%%%%%%%%

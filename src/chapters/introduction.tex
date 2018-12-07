@@ -1,20 +1,16 @@
 \xchapter{Introduction}{}
 
-Programmers often have to choose between tabs and spaces, between \texttt{while} and \texttt{for} loops, between positioning the open bracket in the current or in the next line, etc. These are some of the choices that can be regarded as coding style. Are these choices distinguishing features? In this chapter we will discuss what is style-based source code authorship identification, what challenges it poses, what has been done and what it is useful for. We will also introduce our contributions on the subject. % TODO: ENTENDER, MAUPS
+Programmers often have to choose between tabs and spaces, between \texttt{while} and \texttt{for} loops, between positioning the open bracket in the current line or in the next, etc. These are some of the choices that can be regarded as coding style. Are these choices distinguishing features? In this chapter we will discuss what is style-based source code authorship identification, what challenges it poses, what has been done and what it is useful for. We will also introduce our contributions on the subject.
 
 \section{Biometrics and Coding Style}
 
-Biometrics is the field of computer vision that studies how certain human characteristics can be used to distinguish individuals. Even though physiological characteristics such as fingerprint, iris and face are probably the first ones that come to mind, the study of behavioral characteristics such as typing rhythm, voice, signature and writing style have brought new less intrusive means of distinguishing people. Even though using behavioral characteristics effectively has been made possible throughout the years, the fact that behavior is way more susceptible to change than physiological characteristics poses a big challenge. % TODO: maybe cite guide_bio in this paragraph?
+Biometrics is the field of computer vision that studies how certain human characteristics can be used to distinguish individuals. Even though physiological characteristics such as fingerprint, iris and face are probably the first ones that come to mind, the study of behavioral characteristics such as typing rhythm, voice, signature and writing style have brought new means of distinguishing people. Even though using behavioral characteristics effectively has been made possible throughout the years, the fact that behavior is way more susceptible to change than physiological characteristics poses a big challenge \cite{guidebio}.
 
-% TODO: PRECISO DE CITACOES AQUI, MAUPS
-
-% TODO: paragrafo sobre behavior "coding style"
-
-Identifying authors of texts based on their writing styles is not a new topic \cite{mendenhall}. Throughout the years, computing has evolved and machine learning has reached its peek, making its way through writing style recognition. \citeonline{text_recognition} made it possible to identify the author of a text among tens of thousands of writers. It was not long until other works managed to distinguish programmers by their coding styles \cite{caliskan_2015}. % TODO: VARIAS COISAS AQUI, MAUPS
+Identifying authors of texts based on their writing styles is not a new topic \cite{mendenhall}. Throughout the years, computing has evolved and machine learning has reached its peek. \citeonline{text_recognition} made it possible to identify the author of blog texts among tens of thousands of writers, achieving 25\% accuracy at identifying the author of a text over 100,000 candidate authors. It was not long until other works managed to distinguish programmers by their coding styles \cite{caliskan_2015}.
 
 \section{Motivation}
 
-In this work, we mainly consider the task of an investigator interested in deciding whether two anonymous pieces of code were authored by the same programmer or not. The actual authors of these pieces of code may be unknown to the investigator. Also, these codes may aim to solve different problems, therefore the investigator intends to distinguish them solely based on stylistic features of such pieces. We also consider an easier scenario in which the set of possible authors are known to the investigator and labeled samples for each author are available. % TODO: link to section where these are formulated
+In this work, we mainly consider the task of an investigator interested in deciding whether two anonymous pieces of code were authored by the same programmer or not. The actual authors of these pieces of code may be unknown to the investigator. Also, these codes may aim to solve different problems, therefore the investigator intends to distinguish them solely based on stylistic features of such pieces. We also consider another scenario in which the set of possible authors is known to the investigator and labeled samples for each author are available.
 
 We approach these problems from a deep learning perspective, training a deep neural model that can be subsequently used to solve authorship of source codes and applying it to the different scenarios an investigator can face.
 
@@ -24,12 +20,11 @@ Resolving source code authorship has a few real-world applications both in indus
 
 \subsection{Plagiarism Detection}
 
-% TODO: alguma referencia q reforce esse paragrafo?
 Plagiarism can be generally defined as the unauthorized re-use of the work of another individual. Source code plagiarism is a widespread problem in academic institutions. Checking for plagiarism manually is time-consuming and not extremely effective, becoming impractical as the size of the code base increases.
 
-Although automatic source code plagiarism detection is a recurring and well-studied problem \cite{plag_survey}, the approaches consolidated by widely used tools such as MOSS \cite{moss}, Sherlock (...) (tem uma TODO) and JPlag \cite{jplag} are mainly based on code similarity metrics. Such metrics, however, are highly correlated to the task the code was written to solve.% TODO: refer to sherlock
+Although automatic source code plagiarism detection is a recurring and well-studied problem \cite{plag_survey}, the approaches consolidated by widely used tools such as MOSS \cite{moss}, Sherlock \cite{sherlock} and JPlag \cite{jplag} are mainly based on code similarity metrics. Such metrics, however, are highly correlated to the task the code was written to solve.
 
-For example, consider the specific case of \textit{ghostwriting}, in which a student claims the authorship of a code that was neither written by him nor copied from a classmate, but was actually written by another person (a former student, for example).  It may not be possible to compare the suspicious code with another code made by the actual author, since the ghostwriter may not be known. On the other hand, if pieces of code of the accused party are available, it is possible to determine if his coding style matches the coding style present in the suspicious code.
+For example, consider the specific case of \textit{ghostwriting}, in which a student claims the authorship of a code that was neither written by him nor copied from a classmate, but was actually written by another person (a former student, for example).  It may not be possible to compare the suspicious code with another code made by the actual author, since the ghostwriter may not be known. On the other hand, if other pieces of code of the accused party are available, it is possible to determine if his coding style matches the coding style present in the suspicious code.
 
 \subsection{Copyright Infringement}
 
@@ -40,8 +35,6 @@ Code correlation analysis plays an important role at copyright disputes. In this
 \subsection{Cyber Attack Identification}
 
 Cyber attack identification is a powerful application of software forensics in cyber security. Files left behind by an intruder during a cyber attack may have just enough information for an analyst to identify who the intruder is or to relate such an attack to a previous incident. Therefore, comparing the coding style of the attacker to those from authors of previous attacks or authors of public code repositories is of great interest to the analyst.
-
-% TODO: extend with samsa ransomware case
 
 \subsection{Exposing Anonymous Programmers}
 
@@ -72,5 +65,3 @@ Use of abstract syntax trees (ASTs) for authorship attribution was first introdu
 In this work, we introduce the concept of \textit{coding style descriptors}, which are compact representations that capture distinguishing stylistic features of a source code. We propose an end-to-end deep model that produces coding style descriptors from source code. Then, we study how the generated descriptors encode meaningful properties to the source code attribution problem by solving many of its variations.
 
 We also introduce the Codeforces dataset for source code attribution, a C++ dataset with more than 30,000 samples extracted from Codeforces, a website specialized in holding online programming competitions. We briefly describe how the dataset was constructed and how it differs from previously published datasets.
-
-% TODO: devo falar algo de eval aqui?
