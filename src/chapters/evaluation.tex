@@ -1,39 +1,18 @@
 \xchapter{Evaluation}{}\label{chap:evaluation}
 
-In this chapter, we evaluate our model by solving two variations of the source code attribution problem. In Section (...), we describe how we selected the parameters of our model. In Section (...), we solve the authorship matching problem suggested in Chapter \ref{chap:methodology}. In Section (...), we solve a closed-world identification problem.
+In this chapter, we evaluate our model by solving two variations of the source code attribution problem. In Section \ref{sec:validation}, we describe how we selected the parameters of our model. In Section \ref{sec:matching}, we solve the authorship matching problem suggested in Chapter \ref{chap:methodology}. In Section \ref{sec:one_to_many}, we solve a closed-world identification problem.
 
 \section{Training and Selection}\label{sec:validation}
 
-We trained and validated the LSTM-based model with Tensorflow. We picked the training samples from a balanced dataset with 20,000 C++ examples from 1,000 authors. A validation set was built from another 3,200 samples from 400 authors. No author from the training set was present on the validation set. All the samples were extracted from the Codeforces dataset.
+We trained and validated the proposed model with Tensorflow. We picked the training samples from a balanced dataset with 20,000 C++ examples from 1,000 authors. A validation set was built from another 3,200 samples from 400 authors. No author from the training set was present on the validation set. All the samples were extracted from the Codeforces dataset.
 
 Although programming competitions resemble laboratory conditions, it is common for participants to code on top of a pre-written file, usually called \textit{template}. Although the constructions present on a template file are usually written by the author himself, they are not always used by the piece of code actually written during the competition. Therefore, it is interesting to analyze how classifiers perform when such constructions are stripped out of the code. For that end, we used \textit{clang}\footnote{link-do-clang} to remove unused pieces of code from a C++ program. Moreover, we also removed macros, a construction heavily present in templates of competitive programmers. Therefore, we built two versions of each dataset: one composed of raw source codes and other composed of codes processed by \textit{clang}.
 
-We optimized our model with \textit{RMSprop} (...) for a maximum of 50 epochs, or until the evaluated equal error rate (EER) of the model on the validation set had no improvement for 5 epochs. The model that yielded the highest EER was taken as the final model. During this process, we carefully tuned hyperparameters, arriving at the final configuration shown in Table \ref{tab:lstm_hyper}.
+We optimized the model parameters with \textit{RMSprop} (...) for a maximum of 50 epochs, or until the evaluated equal error rate (EER) of the model on the validation set had no improvement for 5 epochs. The version that yielded the highest EER was taken as the final model. During this process, we carefully tuned its hyperparameters.
 
-Finally, we trained two different classifiers using these parameters: one on the raw version of the dataset and other on the \textit{clang} processed version.
+Finally, we trained two different models with such hyperparameters: one on the raw version of the dataset and other on the \textit{clang} processed version.
 
-% TODO: regenerate this table
-\begin{table}[htbp]
-	\centering
-	\begin{tabular}{c|r}
-		\hline
-		\textbf{Parameters}           & \multicolumn{1}{c}{\textbf{Value}} \\ \hline
-		learning rate   & 0.001                        \\ \hline
-		triplet loss margin   & 0.2                        \\ \hline
-		maximum line length   & 80                        \\ \hline
-		maximum number of lines   & 120                            \\ \hline
-		$d_c$, char embedding size   & 72                           \\ \hline
-		$d_l$, line descriptor size  & 64                            \\ \hline
-		$d$, style descriptor size & 128                            \\ \hline
-		char-level LSTM hidden units (stacked) & 128/64                            \\ \hline
-		line-level LSTM hidden units & 128                            \\ \hline
-		fully-connected layer units  & 256                            \\ \hline
-	\end{tabular}
-	\caption{Hyperparameters selected for the LSTM-base model during validation.}
-	\label{tab:lstm_hyper}
-\end{table}
-
-\section{Matching Two Unknown Source Codes}
+\section{Matching Two Unknown Source Codes}\label{sec:matching}
 
 \begin{figure}[ht]
 	\centering
@@ -44,7 +23,7 @@ Finally, we trained two different classifiers using these parameters: one on the
 
 Using the models we trained, we tried to solve the problem of deciding if two source codes are from the same author. For that end, we constructed a test dataset with 3,200 samples from 400 authors. These samples were extracted from the Codeforces dataset, but this set has no intersection of authors with the training and validation sets used to train the models. Therefore, the authors are unknown to the system. Moreover, we ran \textit{clang} on the samples, obtaining a \textit{clang} processed version of the test dataset.
 
-Finally, we ran four evaluations, one for each combination of classifier and test dataset. The results can be seen in Fig. \ref{fig:roc_complete} and  Table \ref{tab:matching}.
+Finally, we ran four evaluations, one for each combination of model and test dataset. The results can be seen in Fig. \ref{fig:roc_complete} and  Table \ref{tab:matching}.
 
 \begin{table}[ht]
 	\centering
@@ -52,6 +31,10 @@ Finally, we ran four evaluations, one for each combination of classifier and tes
 		\cline{2-3}
 		\multicolumn{1}{l}{}                     & \multicolumn{2}{c}{\textbf{EER (\%)}}                                   \\ \cline{2-3} 
 		\textbf{}                                & \textbf{Raw Test Set}     & \multicolumn{1}{l}{\textbf{\textit{clang} Test Set}} \\ \hline
+		
+		%\textbf{CNN (trained on raw version)}   & \multicolumn{1}{r}{16.31} & 16.88                                       \\ \hline
+		%\textbf{CNN (trained on \textit{clang} version)} & \multicolumn{1}{r}{16.82} & 16.90                                        \\ \hline
+		
 		\textbf{LSTM (trained on raw version)}   & \multicolumn{1}{r}{13.88} & 12.24                                       \\ \hline
 		\textbf{LSTM (trained on \textit{clang} version)} & \multicolumn{1}{r}{13.25} & 11.60                                        \\ \hline
 	\end{tabular}
@@ -61,35 +44,31 @@ Finally, we ran four evaluations, one for each combination of classifier and tes
 
 We can notice that the performance on raw source codes is slightly worse than the others. This can be related to the fact that tested authors are not present in training and validation sets. The model is probably relying more on features present on templates, instead of on stylistic features of the written code. Therefore, the embeddings generalize poorly to unknown authors. The better performance of the \textit{clang} combination supports this claim by showing that learning from features of the written code yields better generalization.
 
-\section{Closed-World Author Identification}
+\section{One-to-Many Author Identification}\label{sec:one_to_many}
 
+We also evaluated our models on the problem posed by \citeauthoronline{caliskan_2015}. In their work, 9 C++ source codes from 250 programmers are extracted from the Google Code Jam dataset. From these, 8 are used for training and one for testing. We simply took the models we trained for the previous experiment and replaced triplet loss with softmax cross-entropy loss. Then, we trained on the $250 \times 8$ source codes for more epochs.
 
+The rank-$n$ metric evaluations, for $n = 1$ and $n = 3$, can be seen in Table \ref{tab:rank}.
 
-The rank-$n$ metric evaluations, for $n = 1, n = 3$, can be seen in Table \ref{tab:rank1} and Table \ref{tab:rank3}, respectively.
-
-\begin{table}[bh]
+\begin{table}[hb]
 	\centering
-	\begin{tabular}{ccr}
-		\cline{2-3}
-		\multicolumn{1}{l}{}                     & \multicolumn{2}{c}{\textbf{rank-1 (\%)}}                                          \\ \cline{2-3} 
-		\textbf{}                                & \textbf{Raw Test Set}               & \multicolumn{1}{l}{\textbf{Clang Test Set}} \\ \hline
-		\textbf{LSTM (trained on raw version)}   & \multicolumn{1}{r}{74.8\%} & 67\%                      \\ \hline
-		\textbf{LSTM (trained on clang version)} & \multicolumn{1}{r}{65\%}   & 69\%                             \\ \hline
-		\textbf{\citeauthoronline{caliskan_2015}} & \multicolumn{1}{r}{(...)\%}   & n/a                            \\ \hline
+	\begin{tabular}{lrrrr}
+		\cline{2-5}
+		& \multicolumn{2}{c}{\textbf{rank-1 (\%)}}                                        & \multicolumn{2}{c}{\textbf{rank-3 (\%)}}                                        \\ \cline{2-5} 
+		\multicolumn{1}{c}{\textbf{}}    & \multicolumn{1}{c}{\textbf{Raw Test}} & \multicolumn{1}{l}{\textbf{Clang Test}} & \multicolumn{1}{l}{\textbf{Raw Test}} & \multicolumn{1}{l}{\textbf{Clang Test}} \\ \hline
+		\textbf{LSTM (trained on raw)}   & 74.8\%                                & 67.0\%                                    & 84.4\%                                & 79.6\%                                  \\ \hline
+		\textbf{LSTM (trained on clang)} & 65.0\%                                  & 69.0\%                                    & 78.8\%                                & 82.8\%                                  \\ \hline
+		\textbf{\citeauthoronline{caliskan_2015}}                & 95.1\%                               & n/a                                     & n/a                                   & n/a                                     \\ \hline
 	\end{tabular}
-	\caption{My caption}
-	\label{tab:rank1}
+	\caption{Rank-$n$ metric for the one-to-many identification problem on 250 programmers of the Google Code Jam dataset. }
+	\label{tab:rank}
 \end{table}
 
-\begin{table}[bh]
+Although we were not able to match the Random Forest model proposed by \citeauthoronline{caliskan_2015}, we are able to show that the generated descriptors are discriminative. Fig. \ref{fig:embedding} shows the style descriptors of source codes from 12 programmers of Google Code Jam dataset. They were embedded into a two-dimensional space for better visualization.
+
+\begin{figure}[ht]
 	\centering
-	\begin{tabular}{ccr}
-		\cline{2-3}
-		\multicolumn{1}{l}{}                     & \multicolumn{2}{c}{\textbf{rank-3 (\%)}}                                          \\ \cline{2-3} 
-		\textbf{}                                & \textbf{Raw Test Set}               & \multicolumn{1}{l}{\textbf{Clang Test Set}} \\ \hline
-		\textbf{LSTM (trained on raw version)}   & \multicolumn{1}{r}{84.4\%} & 79.6\%                               \\ \hline
-		\textbf{LSTM (trained on clang version)} & \multicolumn{1}{r}{78.8\%}   & 82.8\%                               \\ \hline
-	\end{tabular}
-	\caption{My caption}
-	\label{tab:rank3}
-\end{table}
+	\includegraphics[width=0.7\linewidth]{imgs/embedding.png}
+	\caption{128-dimensional descriptors from 12 authors generated by the LSTM model, trained and test on the \textit{clang} test set. The descriptors were embedded into a two-dimensional space with t-SNE.}
+	\label{fig:embedding}
+\end{figure}
