@@ -1,57 +1,57 @@
 \xchapter{Introduction}{}
 
-Programmers often have to choose between tabs and spaces, between \texttt{while} loops and \texttt{for} loops, between positioning the open bracket in the next line or in the current line, etc. These are choices that can be regarded as their coding styles. Are these choices distinguishing features? In this chapter we will discuss what is style-based source code authorship identification, what challenges it poses, what has been done and what it is useful for. We will also introduce our contributions on the subject.
+Programmers often have to choose between tabs and spaces, between \texttt{while} and \texttt{for} loops, between positioning the open bracket in the current or in the next line, etc. These are some of the choices that can be regarded as coding style. Are these choices distinguishing features? In this chapter we will discuss what is style-based source code authorship identification, what challenges it poses, what has been done and what it is useful for. We will also introduce our contributions on the subject. % TODO: ENTENDER, MAUPS
 
 \section{Biometrics and Coding Style}
 
 Biometrics is the field of computer vision that studies how certain human characteristics can be used to distinguish individuals. Even though physiological characteristics such as fingerprint, iris and face are probably the first ones that come to mind, the study of behavioral characteristics such as typing rhythm, voice, signature and writing style have brought new less intrusive means of distinguishing people. Even though using behavioral characteristics effectively has been made possible throughout the years, the fact that behavior is way more susceptible to change than physiological characteristics poses a big challenge. % TODO: maybe cite guide_bio in this paragraph?
 
+% TODO: PRECISO DE CITACOES AQUI, MAUPS
+
 % TODO: paragrafo sobre behavior "coding style"
 
-Identifying authors of texts based on their writing styles is not a new topic \cite{mendenhall}. Throughout the years, computing has evolved and machine learning has reached its peek, making its way through writing style recognition. \citeonline{text_recognition} made it possible to identify the author of a text among tens of thousands of writers. It wasn't long until we were able to distinguish programmers by their coding styles \cite{caliskan_2015}.
+Identifying authors of texts based on their writing styles is not a new topic \cite{mendenhall}. Throughout the years, computing has evolved and machine learning has reached its peek, making its way through writing style recognition. \citeonline{text_recognition} made it possible to identify the author of a text among tens of thousands of writers. It was not long until other works managed to distinguish programmers by their coding styles \cite{caliskan_2015}. % TODO: VARIAS COISAS AQUI, MAUPS
 
 \section{Motivation}
 
-Throughout this work, we mainly consider the task of an investigator interested in deciding whether two anonymous pieces of code were authored by the same programmer or not. The actual authors of these pieces of code may be unknown to the investigator. Also, these codes may aim to solve different problems, therefore the investigator intends to distinguish them solely based on stylistic features of such pieces.
+In this work, we mainly consider the task of an investigator interested in deciding whether two anonymous pieces of code were authored by the same programmer or not. The actual authors of these pieces of code may be unknown to the investigator. Also, these codes may aim to solve different problems, therefore the investigator intends to distinguish them solely based on stylistic features of such pieces. We also consider an easier scenario in which the set of possible authors are known to the investigator and labeled samples for each author are available. % TODO: link to section where these are formulated
 
-We also consider easier scenarios where the set of possible authors are known to the investigator and labeled samples from this set are available. % TODO: link to section where these are formulated
-
-We approach these problems from a deep learning perspective, training a deep neural model that can be subsequently used to resolve authorship of source codes and applying it to the different scenarios an investigator can face.
+We approach these problems from a deep learning perspective, training a deep neural model that can be subsequently used to solve authorship of source codes and applying it to the different scenarios an investigator can face.
 
 \section{Applications}
 
-Resolving source code authorship has a few real-world applications both in industry and academy. Although we haven't directly studied those, in this section we briefly describe a few of them.
+Resolving source code authorship has a few real-world applications both in industry and academy. Although we have not directly studied those, in this section we briefly describe a few of them.
 
 \subsection{Plagiarism Detection}
 
 % TODO: alguma referencia q reforce esse paragrafo?
 Plagiarism can be generally defined as the unauthorized re-use of the work of another individual. Source code plagiarism is a widespread problem in academic institutions. Checking for plagiarism manually is time-consuming and not extremely effective, becoming impractical as the size of the code base increases.
 
-Although automatic source code plagiarism detection is a recurring and well-studied problem \cite{plag_survey}, the approaches consolidated by widely used tools such as MOSS \cite{moss}, Sherlock (...) (tem uma TODO) and JPlag \cite{jplag} are mainly based on code similarity metrics which are greatly correlated to the task the code was written to solve.% TODO: refer to sherlock
+Although automatic source code plagiarism detection is a recurring and well-studied problem \cite{plag_survey}, the approaches consolidated by widely used tools such as MOSS \cite{moss}, Sherlock (...) (tem uma TODO) and JPlag \cite{jplag} are mainly based on code similarity metrics. Such metrics, however, are highly correlated to the task the code was written to solve.% TODO: refer to sherlock
 
-For example, let's consider the specific case of \textit{ghostwriting}, where the code the individual claims to be of his authorship was neither written by him nor copied from a colleague, but was actually written by another person (a former student, for example).  It may not be possible to compare the suspicious code with another code by the same author, since the ghostwriter may actually be unknown. On the other hand, if pieces of code of the accused party are available, it's possible to determine if his coding style matches the coding style present in the suspicious code.
+For example, consider the specific case of \textit{ghostwriting}, in which a student claims the authorship of a code that was neither written by him nor copied from a classmate, but was actually written by another person (a former student, for example).  It may not be possible to compare the suspicious code with another code made by the actual author, since the ghostwriter may not be known. On the other hand, if pieces of code of the accused party are available, it is possible to determine if his coding style matches the coding style present in the suspicious code.
 
 \subsection{Copyright Infringement}
 
-Software forensics is the science of examining source code and binary code in order to identify, preserve, analyze and present facts and opinions about pieces of software. Although it can also be used in civil proceedings, it's most often associated with the investigation of a wide variety of computer crimes, one of which is copyright infringement.
+Software forensics is the science of examining source code and binary code in order to identify, preserve, analyze and present facts and opinions about pieces of software. Although it can also be used in civil proceedings, it is most often associated with the investigation of a wide variety of computer crimes, one of which is copyright infringement.
 
 Code correlation analysis plays an important role at copyright disputes. In this case, an analyst has labeled codes from the involved parties and the task of determining if there was infringement or not.
 
 \subsection{Cyber Attack Identification}
 
-Cyber attack identification is a powerful application of software forensics in cyber security. Files left behind by an intruder during a cyber attack may have just enough information for an analyst to identify who the intruder is or to relate such an attack to a previous incident. Therefore, comparing the coding style of the attacker to those of authors of previous attacks and authors of public code repositories is of great interest to the analyst.
+Cyber attack identification is a powerful application of software forensics in cyber security. Files left behind by an intruder during a cyber attack may have just enough information for an analyst to identify who the intruder is or to relate such an attack to a previous incident. Therefore, comparing the coding style of the attacker to those from authors of previous attacks or authors of public code repositories is of great interest to the analyst.
 
 % TODO: extend with samsa ransomware case
 
 \subsection{Exposing Anonymous Programmers}
 
-Although there are many helpful applications of source code authorship identification, systems capable of de-anonymizing programmers pose a threat to those who want to remain anonymous, in special for anonymous open source contributors \cite{gitblame}. There may be good reasons for a programmer to be anonymous, like working in a software a hostile government doesn't like. 
+Although there are many helpful applications of source code authorship identification, systems capable of de-anonymizing programmers pose a threat to those who want to remain anonymous, in special for anonymous open source contributors \cite{gitblame}. There may be good reasons for a programmer to be anonymous, like working in a software a hostile government does not like. 
 
-An example of a famous open source anonymous programmer is Bitcoin's creator, Satoshi Nakamoto. For example, if we had a set of labeled codes from programmers that are likely to be Nakamoto, we could try to match their coding style to the early versions of Bitcoin, of course, assuming that Nakamoto didn't try to obfuscate his own coding style.
+An example of a famous open source anonymous programmer is Bitcoin's creator, Satoshi Nakamoto. If we had a set of labeled codes from programmers that are likely to be Nakamoto, we could try to match their coding style to the early versions of Bitcoin, of course, assuming that Nakamoto didn't try to obfuscate his own coding style.
 
 \section{Challenges}
 
-Although comparison metrics have proved to work well for source codes, extracting features that encode the author's style and, therefore, are independent of the task being solved have proved to be challenging. For example, features such as methods and variables names can often be misleading. This task gets even more challenging as we need to select features that are steady across different programs and capable of distinguishing between programmers. In this work, we propose an end-to-end model that solves this problem.
+Although comparison metrics have been shown to work well for source codes, extracting features that encode the author's style and, therefore, are independent of the task being solved have shown to be challenging. For example, features such as methods and variables names can often be misleading. This task gets even more challenging as we need to select features that are steady across different programs and capable of distinguishing between programmers. In this work, we propose an end-to-end model that solves this problem.
 
 Also, the environment the programmer is inserted can heavily affect the difficulty of the task. For example, in projects that have a rigid style guide to be followed, much less of the programmer's own coding style might prevail. We don't study the impact of such environments in this work. Moreover, in multi-contributor projects, usually powered by VCS (version control systems), certain pieces of code can contain contributions of many authors, turning the task of relating a single author to the style present on such piece very hard. Although we believe our contributions can be applied to multi-contributor environments, we leave this for future work.
 
@@ -59,11 +59,11 @@ In each of the mentioned applications, the claimed author may act adversarially 
 
 \section{Related Work}
 
-\citeonline{spafford} were among the first that suggested attributing source code based on style. Even though they suggested a lot of features, they did not propose an automated method nor a thorough analysis on how those features were useful. \citeonline{hypothesis} examined the conjecture that programmers are unique and that this uniqueness can be observed in the code they write. They conducted an experiment with programmers and graduate students, and found that programmers do have distinguishable style features which they use consistently.
+\citeonline{spafford} were among the first that suggested attributing source code based on style. Even though they suggested a lot of features, they did not propose an automated method nor a thorough analysis on how those features were useful. \citeonline{hypothesis} examined the conjecture that programmers are unique and that this uniqueness can be observed in the code they write. They conducted an experiment with programmers and graduate students, and found that programmers do have distinguishable style features that are consistently used.
 
-Ranking approaches to source code authorship attribution were proposed by \citeonline{burrows_ngrams,burrows_repo,burrows_ir} and \citeonline{fran_byte}. \citeauthoronline{burrows_ngrams} used an information retrieval technique to solve the task, obtaining token-level n-gram representations of the source codes, building an index from these representations and querying that index for programs with unknown authors. The authors of the top-ranked programs were considered the authors of the queried program. \citeauthoronline{fran_byte} used byte-level n-gram features to tackle the problem. An author profile is composed of the most frequent n-grams in training data of that author. Then, the author of an unclaimed program is considered the one with the most common n-grams to this code. Both works achieved high accuracy on very small suspect sets but didn't scale well.
+Ranking approaches to source code authorship attribution were proposed by \citeonline{burrows_ngrams,burrows_repo,burrows_ir} and \citeonline{fran_byte}. \citeauthoronline{burrows_ngrams} used an information retrieval technique to solve the task, obtaining token-level n-gram representations of the source codes, building an index from these representations and querying that index for programs with unknown authors. The authors of the top-ranked programs were considered the authors of the queried program. \citeauthoronline{fran_byte} used byte-level n-gram features to tackle the problem. An author profile is composed of the most frequent n-grams in training data of that author. Then, the author of an unclaimed program is considered the one with the most common n-grams to this code. Both works achieved high accuracy on very small suspect sets but did not scale well.
 
-Use of ASTs (abstract syntax trees) for authorship attribution was first introduced by \citeonline{pelin}. \citeonline{caliskan_2015} have proposed using fuzzy ASTs and random forests to classify authorship of source code. Moreover, they proposed a coding style feature set for C/C++ source codes and a dataset for authorship attribution, based on Google Code Jam, which is a programming competition that resembles laboratory conditions. \citeonline{gitblame} showed that \citeauthoronline{caliskan_2015} results could be extended to previously unexplored conditions, by adapting their techniques to work for small blocks of code of GitHub repositories.
+Use of abstract syntax trees (ASTs) for authorship attribution was first introduced by \citeonline{pelin}. \citeonline{caliskan_2015} have proposed using fuzzy ASTs and random forests to classify authorship of source code. Moreover, they proposed a coding style feature set for C/C++ source codes and a dataset for authorship attribution, based on Google Code Jam, which is a programming competition that resembles laboratory conditions. \citeonline{gitblame} showed that \citeauthoronline{caliskan_2015} results could be extended to previously unexplored conditions, by adapting their techniques to work for small blocks of code of GitHub repositories.
 
 \citeonline{macdonell} introduced neural networks to the subject by using feed-forward neural networks and multiple discriminant analysis to attribute source codes. \citeonline{bandara} studied how deep neural networks could be competitive to previous methods given enough training data. \citeonline{source_lstm} applied LSTMs to the AST structure of a code.
 
